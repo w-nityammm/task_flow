@@ -10,13 +10,20 @@ class ApiClient {
   }
 
   private async request<T>(path: string, init?: RequestInit, opts?: { silent401?: boolean }): Promise<T> {
+    const headers = new Headers(init?.headers);
+    headers.set('Content-Type', 'application/json');
+
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+
     const res = await fetch(`${this.baseURL}${path}`, {
       ...init,
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...init?.headers,
-      },
+      headers,
     });
 
     if (res.status === 401) {
@@ -24,6 +31,8 @@ class ApiClient {
       if (!opts?.silent401 && typeof window !== 'undefined') {
         const currentPath = window.location.pathname;
         if (currentPath !== '/login' && currentPath !== '/signup') {
+          // Clear any invalid token
+          localStorage.removeItem('auth_token');
           window.location.href = '/login';
         }
       }
@@ -40,21 +49,32 @@ class ApiClient {
   }
 
   // Auth
-  signup(email: string, password: string): Promise<AuthResponse> {
-    return this.request('/auth/signup', {
+  async signup(email: string, password: string): Promise<AuthResponse> {
+    const res = await this.request<AuthResponse>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+    if (res && res.token && typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', res.token);
+    }
+    return res;
   }
 
-  login(email: string, password: string): Promise<AuthResponse> {
-    return this.request('/auth/login', {
+  async login(email: string, password: string): Promise<AuthResponse> {
+    const res = await this.request<AuthResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+    if (res && res.token && typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', res.token);
+    }
+    return res;
   }
 
-  logout(): Promise<void> {
+  async logout(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
     return this.request('/auth/logout', { method: 'POST' });
   }
 

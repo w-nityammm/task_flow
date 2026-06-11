@@ -17,7 +17,15 @@ export function useSSE(onEvent: (event: SSEEvent) => void) {
   const connect = useCallback(() => {
     if (esRef.current) esRef.current.close();
 
-    const es = new EventSource(`${API_URL}/tasks/stream`, { withCredentials: true });
+    let url = `${API_URL}/tasks/stream`;
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        url += `?token=${encodeURIComponent(token)}`;
+      }
+    }
+
+    const es = new EventSource(url, { withCredentials: true });
     esRef.current = es;
 
     es.onmessage = (e) => {

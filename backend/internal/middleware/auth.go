@@ -16,12 +16,13 @@ const (
 
 func Auth(authSvc *service.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Try cookie first, then Authorization header
 		tokenStr, err := c.Cookie("auth_token")
 		if err != nil {
 			authHeader := c.GetHeader("Authorization")
 			if strings.HasPrefix(authHeader, "Bearer ") {
 				tokenStr = strings.TrimPrefix(authHeader, "Bearer ")
+			} else {
+				tokenStr = c.Query("token")
 			}
 		}
 
