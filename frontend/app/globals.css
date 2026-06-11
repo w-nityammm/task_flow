@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+/* ── Design tokens ── */
+:root {
+  /* Neutral dark palette — like Linear/Vercel */
+  --bg:               220 13% 9%;
+  --surface:          220 11% 13%;
+  --surface-elevated: 220 10% 17%;
+  --border:           220 9%  22%;
+  --border-subtle:    220 8%  18%;
+
+  /* Text */
+  --text:             210 20% 94%;
+  --text-muted:       215 10% 58%;
+  --text-dim:         215 8%  42%;
+
+  /* Accent — clean blue */
+  --accent:           213 94% 58%;
+  --accent-hover:     213 94% 51%;
+  --accent-bg:        213 94% 58%;
+
+  /* Semantic */
+  --success:          150 58% 46%;
+  --warning:           38 90% 52%;
+  --danger:             0 72% 56%;
+}
+
+html.light {
+  --bg:               210 20% 97%;
+  --surface:          0 0% 100%;
+  --surface-elevated: 210 16% 93%;
+  --border:           210 14% 86%;
+  --border-subtle:    210 12% 90%;
+  --text:             215 25% 10%;
+  --text-muted:       215 12% 40%;
+  --text-dim:         215 10% 60%;
+}
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; }
+body { background: hsl(var(--bg)); color: hsl(var(--text)); min-height: 100vh; }
+
+/* ── Animations ── */
+@keyframes fade-in  { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin     { to { transform: rotate(360deg); } }
+@keyframes pulse-sk { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+.animate-fade-in     { animation: fade-in .15s ease both; }
+.animate-spin        { animation: spin .6s linear infinite; }
+.animate-pulse-sk    { animation: pulse-sk 1.5s ease-in-out infinite; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
+
+/* ── Focus ── */
+:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 2px; }
+
+/* ── Date input ── */
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(.5); cursor: pointer; }
+
+/* ── Utility ── */
+.line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
