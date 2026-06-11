@@ -30,7 +30,7 @@ function LoginForm() {
     setApiError('');
     try {
       await login(data.email, data.password);
-      router.push(searchParams.get('from') ?? '/');
+      window.location.href = searchParams.get('from') ?? '/';
     } catch (e) {
       setApiError(e instanceof Error ? e.message : 'Login failed');
     }

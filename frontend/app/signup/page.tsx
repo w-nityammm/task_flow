@@ -33,7 +33,7 @@ export default function SignupPage() {
     setApiError('');
     try {
       await signup(data.email, data.password);
-      router.push('/');
+      window.location.href = '/';
     } catch (e) {
       setApiError(e instanceof Error ? e.message : 'Signup failed');
     }
